@@ -10,9 +10,10 @@ export default function OnboardEmployeeForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [departments, setDepartments] = useState([]);
+  const [managers, setManagers] = useState([]);
   const [form, setForm] = useState({
     name: "", email: "", password: "", department: "", unit: "", position: "",
-    nationalId: "", phone: "", emergencyContactName: "", emergencyContactPhone: "",
+    nationalId: "", phone: "", emergencyContactName: "", emergencyContactPhone: "", reportsTo: "",
   });
 
   useEffect(() => {
@@ -20,6 +21,10 @@ export default function OnboardEmployeeForm() {
     fetch("/api/org/departments")
       .then((r) => (r.ok ? r.json() : { departments: [] }))
       .then((data) => setDepartments(data.departments || []))
+      .catch(() => {});
+    fetch("/api/employees")
+      .then((r) => (r.ok ? r.json() : { employees: [] }))
+      .then((data) => setManagers(data.employees || []))
       .catch(() => {});
   }, [open]);
 
@@ -47,7 +52,7 @@ export default function OnboardEmployeeForm() {
     setOpen(false);
     setForm({
       name: "", email: "", password: "", department: "", unit: "", position: "",
-      nationalId: "", phone: "", emergencyContactName: "", emergencyContactPhone: "",
+      nationalId: "", phone: "", emergencyContactName: "", emergencyContactPhone: "", reportsTo: "",
     });
     router.refresh();
   }
@@ -121,6 +126,14 @@ export default function OnboardEmployeeForm() {
             <label className="block text-xs font-medium text-slate-600 mb-1">Emergency contact number</label>
             <input value={form.emergencyContactPhone} onChange={(e) => setForm((f) => ({ ...f, emergencyContactPhone: e.target.value }))} placeholder="e.g. 7798765" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
           </div>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-1">Reports to <span className="text-rose-500">*</span></label>
+          <select required value={form.reportsTo} onChange={(e) => setForm((f) => ({ ...f, reportsTo: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
+            <option value="">Select reporting manager…</option>
+            {managers.map((m) => <option key={m.id} value={m.id}>{m.name} — {m.position || m.role}</option>)}
+          </select>
+          <p className="text-[11px] text-slate-400 mt-1">Required. This manager will approve this employee's leave and attendance requests.</p>
         </div>
         <button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg py-2.5 transition">
           {loading ? "Creating…" : "Create account"}

@@ -6,6 +6,7 @@ import {
   getSettings,
   listTimeChangeForUser,
   listAllTimeChange,
+  listTimeChangeForManager,
 } from "@/lib/db";
 import Card from "@/components/Card";
 import StatusBadge from "@/components/StatusBadge";
@@ -22,6 +23,7 @@ export default async function AttendancePage() {
   const settings = await getSettings();
   const timeChangeRequests = isHr ? await listAllTimeChange() : await listTimeChangeForUser(user.id);
   const requestByAttendance = new Map(timeChangeRequests.map((r) => [r.attendanceId, r]));
+  const teamTimeChangeRequests = !isHr ? await listTimeChangeForManager(user.id) : [];
 
   return (
     <div className="space-y-6">
@@ -105,6 +107,41 @@ export default async function AttendancePage() {
           </table>
         </div>
       </Card>
+
+      {!isHr && teamTimeChangeRequests.length > 0 && (
+        <Card title="Team approvals" subtitle="Time change requests from employees who report to you.">
+          <div className="overflow-x-auto -mx-5">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs text-slate-500 border-b border-slate-100">
+                  <th className="px-5 py-2 font-medium">Employee</th>
+                  <th className="px-5 py-2 font-medium">Date</th>
+                  <th className="px-5 py-2 font-medium">Current</th>
+                  <th className="px-5 py-2 font-medium">Requested</th>
+                  <th className="px-5 py-2 font-medium">Reason</th>
+                  <th className="px-5 py-2 font-medium">Status</th>
+                  <th className="px-5 py-2 font-medium">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {teamTimeChangeRequests.map((r) => (
+                  <tr key={r.id} className="border-b border-slate-50 last:border-0">
+                    <td className="px-5 py-2.5 font-medium text-slate-800">{r.user.name}</td>
+                    <td className="px-5 py-2.5 text-slate-600">{r.date}</td>
+                    <td className="px-5 py-2.5 text-slate-600">{r.currentCheckIn || "—"}</td>
+                    <td className="px-5 py-2.5 text-slate-600">{r.requestedCheckIn}</td>
+                    <td className="px-5 py-2.5 text-slate-600 max-w-[200px] truncate">{r.reason}</td>
+                    <td className="px-5 py-2.5"><StatusBadge status={r.status} /></td>
+                    <td className="px-5 py-2.5">
+                      {r.status === "pending" ? <ReviewButtons endpoint="/api/time-change" id={r.id} /> : <span className="text-xs text-slate-400">Reviewed</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
 
       {isHr && (
         <Card title="Time change requests" subtitle="Employees requesting a correction to a late check-in.">
