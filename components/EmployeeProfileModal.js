@@ -136,6 +136,10 @@ export default function EmployeeProfileModal({ employeeId, isHr, canEditPhoto, o
               <div><p className="text-xs text-slate-400">Position</p><p className="text-slate-700">{employee.position || "—"}</p></div>
               <div><p className="text-xs text-slate-400">Joined</p><p className="text-slate-700">{employee.join_date || "—"}</p></div>
               <div><p className="text-xs text-slate-400">Role</p><p className="text-slate-700 capitalize">{employee.role}</p></div>
+              <div><p className="text-xs text-slate-400">National ID</p><p className="text-slate-700">{employee.national_id || "—"}</p></div>
+              <div><p className="text-xs text-slate-400">Contact number</p><p className="text-slate-700">{employee.phone || "—"}</p></div>
+              <div><p className="text-xs text-slate-400">Emergency contact</p><p className="text-slate-700">{employee.emergency_contact_name || "—"}</p></div>
+              <div><p className="text-xs text-slate-400">Emergency contact number</p><p className="text-slate-700">{employee.emergency_contact_phone || "—"}</p></div>
             </div>
 
             <div className="border-t border-slate-100 pt-3">

@@ -10,7 +10,10 @@ export default function OnboardEmployeeForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [departments, setDepartments] = useState([]);
-  const [form, setForm] = useState({ name: "", email: "", password: "", department: "", unit: "", position: "" });
+  const [form, setForm] = useState({
+    name: "", email: "", password: "", department: "", unit: "", position: "",
+    nationalId: "", phone: "", emergencyContactName: "", emergencyContactPhone: "",
+  });
 
   useEffect(() => {
     if (!open) return;
@@ -42,7 +45,10 @@ export default function OnboardEmployeeForm() {
       return;
     }
     setOpen(false);
-    setForm({ name: "", email: "", password: "", department: "", unit: "", position: "" });
+    setForm({
+      name: "", email: "", password: "", department: "", unit: "", position: "",
+      nationalId: "", phone: "", emergencyContactName: "", emergencyContactPhone: "",
+    });
     router.refresh();
   }
 
@@ -97,6 +103,24 @@ export default function OnboardEmployeeForm() {
         <div>
           <label className="block text-xs font-medium text-slate-600 mb-1">Position</label>
           <input value={form.position} onChange={(e) => setForm((f) => ({ ...f, position: e.target.value }))} placeholder="e.g. Software Engineer" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-1">National ID card number</label>
+          <input value={form.nationalId} onChange={(e) => setForm((f) => ({ ...f, nationalId: e.target.value }))} placeholder="e.g. A123456" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-1">Contact number</label>
+          <input value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="e.g. 7712345" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">Emergency contact name</label>
+            <input value={form.emergencyContactName} onChange={(e) => setForm((f) => ({ ...f, emergencyContactName: e.target.value }))} placeholder="e.g. Aisha (spouse)" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">Emergency contact number</label>
+            <input value={form.emergencyContactPhone} onChange={(e) => setForm((f) => ({ ...f, emergencyContactPhone: e.target.value }))} placeholder="e.g. 7798765" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+          </div>
         </div>
         <button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg py-2.5 transition">
           {loading ? "Creating…" : "Create account"}
