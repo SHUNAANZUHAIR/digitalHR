@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, X } from "lucide-react";
 import LeaveCalendarPicker from "@/components/LeaveCalendarPicker";
@@ -9,7 +9,16 @@ export default function LeaveRequestForm() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [leaveTypes, setLeaveTypes] = useState([]);
   const [form, setForm] = useState({ type: "annual", startDate: "", endDate: "", reason: "" });
+
+  useEffect(() => {
+    if (!open) return;
+    fetch("/api/leave-types")
+      .then((r) => (r.ok ? r.json() : { leaveTypes: [] }))
+      .then((data) => setLeaveTypes(data.leaveTypes || []))
+      .catch(() => {});
+  }, [open]);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -44,10 +53,11 @@ export default function LeaveRequestForm() {
         <div>
           <label className="block text-xs font-medium text-slate-600 mb-1">Type</label>
           <select value={form.type} onChange={(e) => setForm((f) => ({ ...f, type: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
-            <option value="annual">Annual</option>
-            <option value="sick">Sick</option>
-            <option value="casual">Casual</option>
-            <option value="unpaid">Unpaid</option>
+            {leaveTypes.length > 0 ? (
+              leaveTypes.map((lt) => <option key={lt.id} value={lt.name}>{lt.label}</option>)
+            ) : (
+              <option value="annual">Annual</option>
+            )}
           </select>
         </div>
         <div>

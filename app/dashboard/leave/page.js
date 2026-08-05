@@ -1,16 +1,20 @@
 import { getSessionUser } from "@/lib/auth";
-import { listLeaveForUser, listAllLeave, listLeaveForManager } from "@/lib/db";
+import { listLeaveForUser, listAllLeave, listLeaveForManager, listLeaveTypes, getLeaveBalanceForUser, listCompanyLeaveCalendar } from "@/lib/db";
 import Card from "@/components/Card";
 import StatusBadge from "@/components/StatusBadge";
 import LeaveRequestForm from "@/components/LeaveRequestForm";
 import ReviewButtons from "@/components/ReviewButtons";
+import LeaveTypesManager from "@/components/LeaveTypesManager";
+import CompanyLeaveCalendar from "@/components/CompanyLeaveCalendar";
 
 export default async function LeavePage() {
   const user = await getSessionUser();
   const isHr = user.role === "hr";
   const requests = isHr ? await listAllLeave() : await listLeaveForUser(user.id);
   const teamRequests = !isHr ? await listLeaveForManager(user.id) : [];
-  const pendingTeamRequests = teamRequests.filter((r) => r.status === "pending");
+  const leaveTypes = await listLeaveTypes();
+  const balance = !isHr ? await getLeaveBalanceForUser(user.id) : [];
+  const companyLeave = await listCompanyLeaveCalendar();
 
   return (
     <div className="space-y-6">
@@ -23,6 +27,29 @@ export default async function LeavePage() {
         </div>
         {!isHr && <LeaveRequestForm />}
       </div>
+
+      {isHr && (
+        <Card title="Leave types & quotas" subtitle="Set the annual entitlement for each leave type. Leave blank for unlimited.">
+          <LeaveTypesManager leaveTypes={leaveTypes} />
+        </Card>
+      )}
+
+      {!isHr && (
+        <Card title="Your leave balance" subtitle={`Entitlement for ${new Date().getFullYear()}.`}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {balance.map((b) => (
+              <div key={b.type} className="rounded-xl border border-slate-100 px-3 py-2.5">
+                <p className="text-xs text-slate-400">{b.label}</p>
+                <p className="text-lg font-semibold text-slate-900">
+                  {b.remaining == null ? "∞" : b.remaining}
+                  {b.remaining != null && <span className="text-xs font-normal text-slate-400"> / {b.quota}</span>}
+                </p>
+                <p className="text-[11px] text-slate-400">{b.used} used this year</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {!isHr && teamRequests.length > 0 && (
         <Card title="Team approvals" subtitle="Leave requests from employees who report to you.">
@@ -97,6 +124,10 @@ export default async function LeavePage() {
             </tbody>
           </table>
         </div>
+      </Card>
+
+      <Card title="Company leave calendar" subtitle="Who's planned leave, when they leave, and when they're back.">
+        <CompanyLeaveCalendar entries={companyLeave} />
       </Card>
     </div>
   );
