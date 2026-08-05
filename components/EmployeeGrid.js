@@ -31,7 +31,7 @@ export default function EmployeeGrid({ employees, isHr, currentUserId }) {
             onClick={() => setSelectedId(e.id)}
             className="flex flex-col items-center text-center gap-2 rounded-xl border border-slate-100 bg-white p-4 hover:border-indigo-200 hover:shadow-sm transition"
           >
-            <Avatar photo={e.photo} name={e.name} />
+            <Avatar photo={null} name={e.name} />
             <div className="min-w-0 w-full">
               <p className="text-sm font-medium text-slate-900 truncate">{e.name}</p>
               <p className="text-xs text-slate-500 truncate">{e.position || "—"}</p>

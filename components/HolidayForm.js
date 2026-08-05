@@ -4,21 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, X } from "lucide-react";
 
-export default function HolidayForm({ weekendDays = [] }) {
+export default function HolidayForm() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", startDate: "", endDate: "", type: "holiday", adjustedStartTime: "", adjustedEndTime: "" });
-  const [weekend, setWeekend] = useState(weekendDays);
-
-  const DAYS = [
-    { v: 0, l: "Sun" }, { v: 1, l: "Mon" }, { v: 2, l: "Tue" }, { v: 3, l: "Wed" },
-    { v: 4, l: "Thu" }, { v: 5, l: "Fri" }, { v: 6, l: "Sat" },
-  ];
-
-  function toggleDay(v) {
-    setWeekend((w) => (w.includes(v) ? w.filter((d) => d !== v) : [...w, v].sort()));
-  }
 
   function onTypeChange(type) {
     setForm((f) => ({
@@ -43,41 +33,11 @@ export default function HolidayForm({ weekendDays = [] }) {
     router.refresh();
   }
 
-  async function saveWeekend() {
-    setLoading(true);
-    await fetch("/api/settings", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ weekendDays: weekend }),
-    });
-    setLoading(false);
-    router.refresh();
-  }
-
   if (!open) {
     return (
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-1.5">
-          {DAYS.map((d) => (
-            <button
-              type="button"
-              key={d.v}
-              onClick={() => toggleDay(d.v)}
-              className={`w-8 h-8 rounded-lg text-[11px] font-medium transition ${
-                weekend.includes(d.v) ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-              }`}
-            >
-              {d.l}
-            </button>
-          ))}
-          <button type="button" onClick={saveWeekend} disabled={loading} className="text-xs font-medium text-indigo-600 hover:underline ml-1 disabled:opacity-50">
-            Save weekend
-          </button>
-        </div>
-        <button onClick={() => setOpen(true)} className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 hover:underline">
-          <Plus className="w-3.5 h-3.5" /> Add holiday
-        </button>
-      </div>
+      <button onClick={() => setOpen(true)} className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 hover:underline">
+        <Plus className="w-3.5 h-3.5" /> Add holiday
+      </button>
     );
   }
 

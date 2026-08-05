@@ -11,8 +11,11 @@ function money(n) {
 export default async function SalaryPage() {
   const user = await getSessionUser();
   const isHr = user.role === "hr";
-  const slips = isHr ? await listAllSalary() : await listSalaryForUser(user.id);
-  const employees = isHr ? (await listEmployees()).filter((e) => e.role === "employee") : [];
+  const [slips, employeesRaw] = await Promise.all([
+    isHr ? listAllSalary() : listSalaryForUser(user.id),
+    isHr ? listEmployees() : Promise.resolve([]),
+  ]);
+  const employees = employeesRaw.filter((e) => e.role === "employee");
 
   return (
     <div className="space-y-6">

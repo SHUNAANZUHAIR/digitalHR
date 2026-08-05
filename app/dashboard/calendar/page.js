@@ -23,7 +23,7 @@ export default async function CalendarPage() {
           <h1 className="text-xl font-semibold text-slate-900">Working calendar</h1>
           <p className="text-sm text-slate-500 mt-1">Weekends, public holidays and observances.</p>
         </div>
-        {isHr && <HolidayForm weekendDays={settings.weekendDays} />}
+        {isHr && <HolidayForm />}
       </div>
 
       <Card title="Weekly off days">
