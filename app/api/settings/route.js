@@ -15,8 +15,11 @@ export async function PUT(req) {
   const body = await req.json();
   const settings = await updateSettings({
     checkInDeadline: body.checkInDeadline,
-    workingHours: body.workingHours ? Number(body.workingHours) : undefined,
+    workingHours: body.workingHours !== undefined && body.workingHours !== "" ? Number(body.workingHours) : undefined,
     weekendDays: body.weekendDays,
+    workStartTime: body.workStartTime,
+    workEndTime: body.workEndTime,
+    lateDeductionPerDay: body.lateDeductionPerDay !== undefined && body.lateDeductionPerDay !== "" ? Number(body.lateDeductionPerDay) : undefined,
   });
   return NextResponse.json({ ok: true, settings });
 }

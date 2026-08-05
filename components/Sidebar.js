@@ -14,6 +14,7 @@ import {
   LogOut,
   Building2,
   Users,
+  Network,
 } from "lucide-react";
 
 const NAV = [
@@ -29,6 +30,7 @@ const NAV = [
 
 const HR_NAV = [
   { href: "/dashboard/employees", label: "Employees", icon: Users },
+  { href: "/dashboard/organization", label: "Organization", icon: Network },
 ];
 
 export default function Sidebar({ user }) {

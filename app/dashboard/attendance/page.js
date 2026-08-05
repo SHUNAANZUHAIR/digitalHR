@@ -33,7 +33,7 @@ export default async function AttendancePage() {
           </p>
         </div>
         {isHr && (
-          <AttendanceSettingsForm checkInDeadline={settings.checkInDeadline} workingHours={settings.workingHours} />
+          <AttendanceSettingsForm checkInDeadline={settings.checkInDeadline} workingHours={settings.workingHours} workStartTime={settings.workStartTime} workEndTime={settings.workEndTime} lateDeductionPerDay={settings.lateDeductionPerDay} />
         )}
       </div>
 

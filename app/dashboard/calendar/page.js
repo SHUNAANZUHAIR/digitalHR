@@ -49,6 +49,7 @@ export default async function CalendarPage() {
                 <th className="px-5 py-2 font-medium">Name</th>
                 <th className="px-5 py-2 font-medium">Dates</th>
                 <th className="px-5 py-2 font-medium">Type</th>
+                <th className="px-5 py-2 font-medium">Working hours</th>
                 {isHr && <th className="px-5 py-2 font-medium">Action</th>}
               </tr>
             </thead>
@@ -60,12 +61,15 @@ export default async function CalendarPage() {
                     {h.startDate === h.endDate ? h.startDate : `${h.startDate} → ${h.endDate}`}
                   </td>
                   <td className="px-5 py-2.5"><StatusBadge status={h.type} /></td>
+                  <td className="px-5 py-2.5 text-slate-600">
+                    {h.adjustedStartTime ? `${h.adjustedStartTime} - ${h.adjustedEndTime || "?"} (payout unchanged)` : "—"}
+                  </td>
                   {isHr && <td className="px-5 py-2.5"><DeleteHolidayButton id={h.id} /></td>}
                 </tr>
               ))}
               {upcoming.length === 0 && (
                 <tr>
-                  <td colSpan={isHr ? 4 : 3} className="px-5 py-6 text-center text-slate-400 text-sm">No upcoming holidays.</td>
+                  <td colSpan={isHr ? 5 : 4} className="px-5 py-6 text-center text-slate-400 text-sm">No upcoming holidays.</td>
                 </tr>
               )}
             </tbody>

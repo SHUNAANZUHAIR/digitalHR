@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, X } from "lucide-react";
 
@@ -19,10 +19,21 @@ export default function SalaryForm({ employees }) {
     allowances: "",
     deductions: "",
   });
+  const [lateInfo, setLateInfo] = useState(null);
 
   function update(key) {
     return (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
   }
+
+  useEffect(() => {
+    if (!open || !form.userId || !form.month || !form.year) return;
+    const controller = new AbortController();
+    fetch(`/api/attendance/late-count?userId=${form.userId}&month=${form.month}&year=${form.year}`, { signal: controller.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => setLateInfo(data))
+      .catch(() => {});
+    return () => controller.abort();
+  }, [open, form.userId, form.month, form.year]);
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -93,6 +104,11 @@ export default function SalaryForm({ employees }) {
             <input type="number" value={form.deductions} onChange={update("deductions")} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
           </div>
         </div>
+        {lateInfo && lateInfo.lateDays > 0 && (
+          <p className="text-[11px] text-amber-600 bg-amber-50 border border-amber-100 rounded-lg px-2.5 py-1.5">
+            {lateInfo.lateDays} late day{lateInfo.lateDays === 1 ? "" : "s"} this period — suggested pay-cut deduction: MVR {lateInfo.suggestedDeduction.toLocaleString()}
+          </p>
+        )}
 
         <button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg py-2.5 transition">
           {loading ? "Saving…" : "Save slip"}
