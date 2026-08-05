@@ -111,21 +111,19 @@ export default function HolidayForm({ weekendDays = [] }) {
           </div>
         </div>
 
-        {form.type === "ramadan" && (
-          <div className="rounded-lg bg-indigo-50 border border-indigo-100 p-3 space-y-2">
-            <p className="text-[11px] text-indigo-700">Shortened hours for this period. Salary/payout is unaffected — only attendance timing changes.</p>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1">Adjusted start</label>
-                <input type="time" value={form.adjustedStartTime} onChange={(e) => setForm((f) => ({ ...f, adjustedStartTime: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white" />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1">Adjusted end</label>
-                <input type="time" value={form.adjustedEndTime} onChange={(e) => setForm((f) => ({ ...f, adjustedEndTime: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white" />
-              </div>
+        <div className="rounded-lg bg-indigo-50 border border-indigo-100 p-3 space-y-2">
+          <p className="text-[11px] text-indigo-700">Optional: set shortened/adjusted working hours for this period (e.g. Ramadan). Leave blank for a normal full-day holiday. Salary/payout is unaffected either way — only attendance timing changes.</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1">Adjusted start</label>
+              <input type="time" value={form.adjustedStartTime} onChange={(e) => setForm((f) => ({ ...f, adjustedStartTime: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1">Adjusted end</label>
+              <input type="time" value={form.adjustedEndTime} onChange={(e) => setForm((f) => ({ ...f, adjustedEndTime: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white" />
             </div>
           </div>
-        )}
+        </div>
 
         <button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg py-2.5 transition">
           {loading ? "Saving…" : "Add holiday"}
