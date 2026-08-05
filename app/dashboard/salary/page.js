@@ -5,7 +5,7 @@ import StatusBadge from "@/components/StatusBadge";
 import SalaryForm from "@/components/SalaryForm";
 
 function money(n) {
-  return `PKR ${Number(n).toLocaleString()}`;
+  return `MVR ${Number(n).toLocaleString()}`;
 }
 
 export default async function SalaryPage() {
@@ -35,6 +35,7 @@ export default async function SalaryPage() {
                 <th className="px-5 py-2 font-medium">Deductions</th>
                 <th className="px-5 py-2 font-medium">Net pay</th>
                 <th className="px-5 py-2 font-medium">Status</th>
+                <th className="px-5 py-2 font-medium">Slip</th>
               </tr>
             </thead>
             <tbody>
@@ -47,11 +48,16 @@ export default async function SalaryPage() {
                   <td className="px-5 py-2.5 text-slate-600">{money(s.deductions)}</td>
                   <td className="px-5 py-2.5 font-medium text-slate-900">{money(s.netPay)}</td>
                   <td className="px-5 py-2.5"><StatusBadge status={s.status} /></td>
+                  <td className="px-5 py-2.5">
+                    <a href={`/api/salary/${s.id}/pdf`} className="text-xs font-medium text-indigo-600 hover:underline">
+                      Download PDF
+                    </a>
+                  </td>
                 </tr>
               ))}
               {slips.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-5 py-6 text-center text-slate-400 text-sm">No salary slips yet.</td>
+                  <td colSpan={isHr ? 8 : 7} className="px-5 py-6 text-center text-slate-400 text-sm">No salary slips yet.</td>
                 </tr>
               )}
             </tbody>

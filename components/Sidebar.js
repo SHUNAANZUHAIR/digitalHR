@@ -8,10 +8,12 @@ import {
   Wallet,
   Megaphone,
   CalendarDays,
+  CalendarRange,
   HandCoins,
   TrendingUp,
   LogOut,
   Building2,
+  Users,
 } from "lucide-react";
 
 const NAV = [
@@ -22,6 +24,11 @@ const NAV = [
   { href: "/dashboard/leave", label: "Leave", icon: CalendarDays },
   { href: "/dashboard/services", label: "Requests", icon: HandCoins },
   { href: "/dashboard/appraisal", label: "Appraisal", icon: TrendingUp },
+  { href: "/dashboard/calendar", label: "Calendar", icon: CalendarRange },
+];
+
+const HR_NAV = [
+  { href: "/dashboard/employees", label: "Employees", icon: Users },
 ];
 
 export default function Sidebar({ user }) {
@@ -44,7 +51,7 @@ export default function Sidebar({ user }) {
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {NAV.map(({ href, label, icon: Icon }) => {
+        {(user.role === "hr" ? [...NAV.slice(0, 1), ...HR_NAV, ...NAV.slice(1)] : NAV).map(({ href, label, icon: Icon }) => {
           const active = href === "/dashboard" ? pathname === href : pathname.startsWith(href);
           return (
             <Link
