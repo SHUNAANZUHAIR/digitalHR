@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, X } from "lucide-react";
+import LeaveCalendarPicker from "@/components/LeaveCalendarPicker";
 
 export default function LeaveRequestForm() {
   const router = useRouter();
@@ -12,6 +13,7 @@ export default function LeaveRequestForm() {
 
   async function onSubmit(e) {
     e.preventDefault();
+    if (!form.startDate || !form.endDate) return;
     setLoading(true);
     await fetch("/api/leave", {
       method: "POST",
@@ -48,21 +50,21 @@ export default function LeaveRequestForm() {
             <option value="unpaid">Unpaid</option>
           </select>
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-xs font-medium text-slate-600 mb-1">Start date</label>
-            <input type="date" required value={form.startDate} onChange={(e) => setForm((f) => ({ ...f, startDate: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-600 mb-1">End date</label>
-            <input type="date" required value={form.endDate} onChange={(e) => setForm((f) => ({ ...f, endDate: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+        <div>
+          <label className="block text-xs font-medium text-slate-600 mb-1">Plan your leave</label>
+          <div className="rounded-lg border border-slate-200 p-2.5">
+            <LeaveCalendarPicker
+              startDate={form.startDate}
+              endDate={form.endDate}
+              onChange={({ startDate, endDate }) => setForm((f) => ({ ...f, startDate, endDate }))}
+            />
           </div>
         </div>
         <div>
           <label className="block text-xs font-medium text-slate-600 mb-1">Reason</label>
           <textarea rows={3} value={form.reason} onChange={(e) => setForm((f) => ({ ...f, reason: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm resize-none" />
         </div>
-        <button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg py-2.5 transition">
+        <button type="submit" disabled={loading || !form.startDate || !form.endDate} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg py-2.5 transition">
           {loading ? "Submitting…" : "Submit request"}
         </button>
       </form>

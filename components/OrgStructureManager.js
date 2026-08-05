@@ -91,6 +91,9 @@ function UnitRow({ unit, refresh }) {
     <li className="flex items-center gap-2 pl-8 py-1 text-sm text-slate-600">
       <span className="w-1 h-1 rounded-full bg-slate-300" />
       <EditableName name={unit.name} onRename={rename} onDelete={remove} />
+      {typeof unit.employeeCount === "number" && (
+        <span className="text-[10px] font-medium text-slate-400 bg-slate-100 rounded-full px-1.5 py-0.5">{unit.employeeCount}</span>
+      )}
     </li>
   );
 }
@@ -155,8 +158,11 @@ function DepartmentCard({ department, refresh }) {
         <button type="button" onClick={() => setExpanded((e) => !e)} className="text-slate-400">
           {expanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
         </button>
-        <span className="text-sm font-semibold text-slate-900">
+        <span className="text-sm font-semibold text-slate-900 inline-flex items-center gap-2">
           <EditableName name={department.name} onRename={rename} onDelete={remove} />
+          {typeof department.employeeCount === "number" && (
+            <span className="text-[10px] font-medium text-indigo-600 bg-indigo-50 rounded-full px-1.5 py-0.5">{department.employeeCount} employee{department.employeeCount === 1 ? "" : "s"}</span>
+          )}
         </span>
       </div>
       {expanded && (
