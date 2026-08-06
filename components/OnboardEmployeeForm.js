@@ -139,8 +139,8 @@ export default function OnboardEmployeeForm() {
           <p className="text-[11px] font-medium text-slate-500">Payroll details</p>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Basic salary</label>
-              <input type="number" value={form.basicSalary} onChange={(e) => setForm((f) => ({ ...f, basicSalary: e.target.value }))} placeholder="e.g. 15000" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white" />
+              <label className="block text-xs font-medium text-slate-600 mb-1">Basic salary <span className="text-rose-500">*</span></label>
+              <input type="number" required min="0.01" step="0.01" value={form.basicSalary} onChange={(e) => setForm((f) => ({ ...f, basicSalary: e.target.value }))} placeholder="e.g. 15000" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white" />
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1">Default allowances</label>

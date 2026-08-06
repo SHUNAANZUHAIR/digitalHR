@@ -26,6 +26,9 @@ export async function POST(req) {
   if (!reportsTo) {
     return NextResponse.json({ error: "A reporting manager is required — every employee must be assigned to the reporting/approval workflow." }, { status: 400 });
   }
+  if (!basicSalary || Number(basicSalary) <= 0) {
+    return NextResponse.json({ error: "Basic salary is required." }, { status: 400 });
+  }
   if (await getUserByEmail(email)) {
     return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
   }
