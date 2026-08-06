@@ -61,8 +61,11 @@ export default function OnboardEmployeeForm() {
 
   if (!open) {
     return (
-      <button onClick={() => setOpen(true)} className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 hover:underline">
-        <UserPlus className="w-3.5 h-3.5" /> Onboard employee
+      <button
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-full pl-3.5 pr-4 py-2 transition"
+      >
+        <UserPlus className="w-4 h-4" /> Onboard employee
       </button>
     );
   }
