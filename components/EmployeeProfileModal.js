@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, User, Upload, FileText, Trash2, Download } from "lucide-react";
+import { X, User, Upload, FileText, Trash2, Download, Pencil } from "lucide-react";
 
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
@@ -29,6 +29,9 @@ export default function EmployeeProfileModal({ employeeId, isHr, canEditPhoto, o
   const [docType, setDocType] = useState("contract");
   const [docFile, setDocFile] = useState(null);
   const [error, setError] = useState("");
+  const [editingPayroll, setEditingPayroll] = useState(false);
+  const [payrollSaving, setPayrollSaving] = useState(false);
+  const [payrollForm, setPayrollForm] = useState({ basicSalary: "", defaultAllowances: "", bankAccountNumber: "" });
 
   async function refresh() {
     const [empRes, docsRes] = await Promise.all([
@@ -63,6 +66,28 @@ export default function EmployeeProfileModal({ employeeId, isHr, canEditPhoto, o
       setError(err.message || "Could not upload photo.");
     }
     setPhotoUploading(false);
+  }
+
+  function startEditPayroll() {
+    setPayrollForm({
+      basicSalary: employee.basic_salary ?? "",
+      defaultAllowances: employee.default_allowances ?? "",
+      bankAccountNumber: employee.bank_account_number || "",
+    });
+    setEditingPayroll(true);
+  }
+
+  async function savePayroll(e) {
+    e.preventDefault();
+    setPayrollSaving(true);
+    const res = await fetch(`/api/employees/${employeeId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payrollForm),
+    });
+    if (res.ok) setEmployee((await res.json()).employee);
+    setPayrollSaving(false);
+    setEditingPayroll(false);
   }
 
   async function onDocSubmit(e) {
@@ -141,6 +166,47 @@ export default function EmployeeProfileModal({ employeeId, isHr, canEditPhoto, o
               <div><p className="text-xs text-slate-400">Emergency contact</p><p className="text-slate-700">{employee.emergency_contact_name || "—"}</p></div>
               <div><p className="text-xs text-slate-400">Emergency contact number</p><p className="text-slate-700">{employee.emergency_contact_phone || "—"}</p></div>
             </div>
+
+            {isHr && (
+              <div className="border-t border-slate-100 pt-3">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-medium text-slate-600">Payroll details</p>
+                  {!editingPayroll && (
+                    <button type="button" onClick={startEditPayroll} className="text-slate-400 hover:text-indigo-600">
+                      <Pencil className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+                {editingPayroll ? (
+                  <form onSubmit={savePayroll} className="space-y-2.5">
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1">Basic salary</label>
+                        <input type="number" value={payrollForm.basicSalary} onChange={(e) => setPayrollForm((f) => ({ ...f, basicSalary: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1">Default allowances</label>
+                        <input type="number" value={payrollForm.defaultAllowances} onChange={(e) => setPayrollForm((f) => ({ ...f, defaultAllowances: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1">Bank account number</label>
+                      <input value={payrollForm.bankAccountNumber} onChange={(e) => setPayrollForm((f) => ({ ...f, bankAccountNumber: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button type="submit" disabled={payrollSaving} className="text-xs font-medium text-indigo-600 disabled:opacity-50">{payrollSaving ? "Saving…" : "Save"}</button>
+                      <button type="button" onClick={() => setEditingPayroll(false)} className="text-xs text-slate-400">Cancel</button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div><p className="text-xs text-slate-400">Basic salary</p><p className="text-slate-700">{employee.basic_salary != null ? `MVR ${Number(employee.basic_salary).toLocaleString()}` : "—"}</p></div>
+                    <div><p className="text-xs text-slate-400">Default allowances</p><p className="text-slate-700">{employee.default_allowances != null ? `MVR ${Number(employee.default_allowances).toLocaleString()}` : "—"}</p></div>
+                    <div className="col-span-2"><p className="text-xs text-slate-400">Bank account number</p><p className="text-slate-700">{employee.bank_account_number || "—"}</p></div>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="border-t border-slate-100 pt-3">
               <p className="text-xs font-medium text-slate-600 mb-2">Documents</p>

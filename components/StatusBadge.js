@@ -18,8 +18,8 @@ const LABELS = {
   not_started: "Not started",
 };
 
-export default function StatusBadge({ status }) {
+export default function StatusBadge({ status, label: labelOverride }) {
   const cls = STYLES[status] || "bg-slate-100 text-slate-600";
-  const label = LABELS[status] || (status ? status.charAt(0).toUpperCase() + status.slice(1) : "—");
+  const label = labelOverride || LABELS[status] || (status ? status.charAt(0).toUpperCase() + status.slice(1) : "—");
   return <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${cls}`}>{label}</span>;
 }

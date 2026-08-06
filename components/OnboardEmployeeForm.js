@@ -14,6 +14,7 @@ export default function OnboardEmployeeForm() {
   const [form, setForm] = useState({
     name: "", email: "", password: "", department: "", unit: "", position: "",
     nationalId: "", phone: "", emergencyContactName: "", emergencyContactPhone: "", reportsTo: "",
+    basicSalary: "", defaultAllowances: "", bankAccountNumber: "",
   });
 
   useEffect(() => {
@@ -53,6 +54,7 @@ export default function OnboardEmployeeForm() {
     setForm({
       name: "", email: "", password: "", department: "", unit: "", position: "",
       nationalId: "", phone: "", emergencyContactName: "", emergencyContactPhone: "", reportsTo: "",
+      basicSalary: "", defaultAllowances: "", bankAccountNumber: "",
     });
     router.refresh();
   }
@@ -67,23 +69,31 @@ export default function OnboardEmployeeForm() {
 
   return (
     <div className="fixed inset-0 bg-slate-900/30 flex items-center justify-center z-50 px-4" onClick={() => setOpen(false)}>
-      <form onClick={(e) => e.stopPropagation()} onSubmit={onSubmit} className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-sm space-y-3 max-h-[90vh] overflow-y-auto">
+      <form onClick={(e) => e.stopPropagation()} onSubmit={onSubmit} className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-2xl space-y-3 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-1">
           <h3 className="text-sm font-semibold text-slate-900">Onboard new employee</h3>
           <button type="button" onClick={() => setOpen(false)}><X className="w-4 h-4 text-slate-400" /></button>
         </div>
         {error && <p className="text-xs text-rose-600 bg-rose-50 rounded-lg px-3 py-2">{error}</p>}
-        <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Full name</label>
-          <input required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">Full name</label>
+            <input required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">Email</label>
+            <input type="email" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+          </div>
         </div>
-        <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Email</label>
-          <input type="email" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Temporary password</label>
-          <input required minLength={6} value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">Temporary password</label>
+            <input required minLength={6} value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">Position</label>
+            <input value={form.position} onChange={(e) => setForm((f) => ({ ...f, position: e.target.value }))} placeholder="e.g. Software Engineer" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -105,17 +115,15 @@ export default function OnboardEmployeeForm() {
             </select>
           </div>
         </div>
-        <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Position</label>
-          <input value={form.position} onChange={(e) => setForm((f) => ({ ...f, position: e.target.value }))} placeholder="e.g. Software Engineer" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">National ID card number</label>
-          <input value={form.nationalId} onChange={(e) => setForm((f) => ({ ...f, nationalId: e.target.value }))} placeholder="e.g. A123456" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-slate-600 mb-1">Contact number</label>
-          <input value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="e.g. 7712345" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">National ID card number</label>
+            <input value={form.nationalId} onChange={(e) => setForm((f) => ({ ...f, nationalId: e.target.value }))} placeholder="e.g. A123456" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">Contact number</label>
+            <input value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="e.g. 7712345" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -126,6 +134,24 @@ export default function OnboardEmployeeForm() {
             <label className="block text-xs font-medium text-slate-600 mb-1">Emergency contact number</label>
             <input value={form.emergencyContactPhone} onChange={(e) => setForm((f) => ({ ...f, emergencyContactPhone: e.target.value }))} placeholder="e.g. 7798765" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
           </div>
+        </div>
+        <div className="rounded-lg bg-slate-50 border border-slate-100 p-3 space-y-3">
+          <p className="text-[11px] font-medium text-slate-500">Payroll details</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1">Basic salary</label>
+              <input type="number" value={form.basicSalary} onChange={(e) => setForm((f) => ({ ...f, basicSalary: e.target.value }))} placeholder="e.g. 15000" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-600 mb-1">Default allowances</label>
+              <input type="number" value={form.defaultAllowances} onChange={(e) => setForm((f) => ({ ...f, defaultAllowances: e.target.value }))} placeholder="e.g. 2000" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">Bank account number</label>
+            <input value={form.bankAccountNumber} onChange={(e) => setForm((f) => ({ ...f, bankAccountNumber: e.target.value }))} placeholder="e.g. 7730000123456" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white" />
+          </div>
+          <p className="text-[11px] text-slate-400">Used to pre-fill the salary process each month. Can be changed later from the employee profile.</p>
         </div>
         <div>
           <label className="block text-xs font-medium text-slate-600 mb-1">Reports to <span className="text-rose-500">*</span></label>

@@ -26,7 +26,7 @@ export default function MarkPaidButton({ id }) {
       className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 text-xs font-medium"
     >
       <Banknote className="w-3.5 h-3.5" />
-      {loading ? "Paying…" : "Mark as paid"}
+      {loading ? "Saving…" : "Mark salary processed"}
     </button>
   );
 }

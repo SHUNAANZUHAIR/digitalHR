@@ -12,7 +12,11 @@ export async function GET() {
 export async function POST(req) {
   const user = await getSessionUser();
   if (!user || user.role !== "hr") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  const { name, email, password, department, position, role, unit, nationalId, phone, emergencyContactName, emergencyContactPhone, reportsTo } = await req.json();
+  const {
+    name, email, password, department, position, role, unit, nationalId, phone,
+    emergencyContactName, emergencyContactPhone, reportsTo,
+    basicSalary, defaultAllowances, bankAccountNumber,
+  } = await req.json();
   if (!name || !email || !password) {
     return NextResponse.json({ error: "Name, email and password are required." }, { status: 400 });
   }
@@ -25,6 +29,12 @@ export async function POST(req) {
   if (await getUserByEmail(email)) {
     return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
   }
-  const rec = await onboardEmployee({ name, email, password, department, position, role, unit, nationalId, phone, emergencyContactName, emergencyContactPhone, reportsTo });
+  const rec = await onboardEmployee({
+    name, email, password, department, position, role, unit, nationalId, phone,
+    emergencyContactName, emergencyContactPhone, reportsTo,
+    basicSalary: basicSalary ? Number(basicSalary) : null,
+    defaultAllowances: defaultAllowances ? Number(defaultAllowances) : null,
+    bankAccountNumber,
+  });
   return NextResponse.json({ ok: true, record: rec });
 }

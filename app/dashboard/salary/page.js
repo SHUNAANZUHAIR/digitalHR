@@ -1,22 +1,22 @@
 import { getSessionUser } from "@/lib/auth";
-import { listSalaryForUser, listAllSalary, listEmployees } from "@/lib/db";
+import { listSalaryForUser, listAllSalary } from "@/lib/db";
 import Card from "@/components/Card";
 import StatusBadge from "@/components/StatusBadge";
-import SalaryForm from "@/components/SalaryForm";
+import GenerateSalaryFlow from "@/components/GenerateSalaryFlow";
 import MarkPaidButton from "@/components/MarkPaidButton";
 
 function money(n) {
   return `MVR ${Number(n).toLocaleString()}`;
 }
 
+function statusLabel(status) {
+  return status === "pending" ? "Pending payment transfer" : status === "paid" ? "Salary processed" : undefined;
+}
+
 export default async function SalaryPage() {
   const user = await getSessionUser();
   const isHr = user.role === "hr";
-  const [slips, employeesRaw] = await Promise.all([
-    isHr ? listAllSalary() : listSalaryForUser(user.id),
-    isHr ? listEmployees() : Promise.resolve([]),
-  ]);
-  const employees = employeesRaw.filter((e) => e.role === "employee");
+  const slips = isHr ? await listAllSalary() : await listSalaryForUser(user.id);
   const pendingSlips = isHr ? slips.filter((s) => s.status === "pending") : [];
 
   return (
@@ -29,7 +29,7 @@ export default async function SalaryPage() {
       </div>
 
       {isHr && (
-        <Card title="Pending payouts" subtitle="Slips awaiting payment. Mark as paid once the transfer is sent.">
+        <Card title="Pending payment transfers" subtitle="Slips generated and awaiting bank transfer. Mark salary processed once the transfer is sent.">
           <div className="overflow-x-auto -mx-5">
             <table className="w-full text-sm">
               <thead>
@@ -60,7 +60,7 @@ export default async function SalaryPage() {
         </Card>
       )}
 
-      <Card title="Salary slips" action={isHr && <SalaryForm employees={employees} />}>
+      <Card title="Salary slips" action={isHr && <GenerateSalaryFlow />}>
         <div className="overflow-x-auto -mx-5">
           <table className="w-full text-sm">
             <thead>
@@ -84,7 +84,7 @@ export default async function SalaryPage() {
                   <td className="px-5 py-2.5 text-slate-600">{money(s.allowances)}</td>
                   <td className="px-5 py-2.5 text-slate-600">{money(s.deductions)}</td>
                   <td className="px-5 py-2.5 font-medium text-slate-900">{money(s.netPay)}</td>
-                  <td className="px-5 py-2.5"><StatusBadge status={s.status} /></td>
+                  <td className="px-5 py-2.5"><StatusBadge status={s.status} label={statusLabel(s.status)} /></td>
                   <td className="px-5 py-2.5">
                     <a href={`/api/salary/${s.id}/pdf`} className="text-xs font-medium text-indigo-600 hover:underline">
                       Download PDF
