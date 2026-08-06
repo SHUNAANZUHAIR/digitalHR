@@ -15,7 +15,7 @@ export default function HolidayForm() {
       ...f,
       type,
       adjustedStartTime: type === "ramadan" && !f.adjustedStartTime ? "09:00" : f.adjustedStartTime,
-      adjustedEndTime: type === "ramadan" && !f.adjustedEndTime ? "13:30" : f.adjustedEndTime,
+      adjustedEndTime: type === "ramadan" && !f.adjustedEndTime ? "13:00" : f.adjustedEndTime,
     }));
   }
 

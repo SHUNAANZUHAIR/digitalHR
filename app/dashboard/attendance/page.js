@@ -4,6 +4,7 @@ import {
   listAllAttendance,
   getTodayAttendance,
   getSettings,
+  getEffectiveWorkHours,
   listTimeChangeForUser,
   listAllTimeChange,
   listTimeChangeForManager,
@@ -21,6 +22,7 @@ export default async function AttendancePage() {
   const records = isHr ? await listAllAttendance() : await listAttendanceForUser(user.id);
   const today = !isHr ? await getTodayAttendance(user.id) : null;
   const settings = await getSettings();
+  const todaysHours = !isHr ? await getEffectiveWorkHours(new Date().toISOString().slice(0, 10)) : null;
   const timeChangeRequests = isHr ? await listAllTimeChange() : await listTimeChangeForUser(user.id);
   const requestByAttendance = new Map(timeChangeRequests.map((r) => [r.attendanceId, r]));
   const teamTimeChangeRequests = !isHr ? await listTimeChangeForManager(user.id) : [];
@@ -54,6 +56,13 @@ export default async function AttendancePage() {
               <div>
                 <p className="text-xs text-slate-500">Expected check-in</p>
                 <p className="font-medium text-slate-900">{settings.checkInDeadline}</p>
+              </div>
+              <div>
+                <p className="text-xs text-slate-500">Today&apos;s hours</p>
+                <p className="font-medium text-slate-900">
+                  {todaysHours.start} – {todaysHours.end}
+                  {todaysHours.label && <span className="ml-1.5 text-xs font-normal text-indigo-600">({todaysHours.label})</span>}
+                </p>
               </div>
             </div>
             <ClockButton checkedIn={!!today?.checkIn} checkedOut={!!today?.checkOut} />

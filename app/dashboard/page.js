@@ -9,10 +9,12 @@ import {
   listLeaveForUser,
   listServicesForUser,
   listAppraisalsForUser,
+  listCompanyLeaveCalendar,
 } from "@/lib/db";
 import Card from "@/components/Card";
 import StatusBadge from "@/components/StatusBadge";
 import ClockButton from "@/components/ClockButton";
+import CompanyLeaveCalendar from "@/components/CompanyLeaveCalendar";
 import Link from "next/link";
 import { Users, Clock, CalendarDays, HandCoins } from "lucide-react";
 
@@ -31,6 +33,7 @@ function Stat({ icon: Icon, label, value }) {
 export default async function DashboardHome() {
   const user = await getSessionUser();
   const announcements = (await listAnnouncements()).slice(0, 3);
+  const companyLeave = await listCompanyLeaveCalendar();
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
@@ -99,6 +102,10 @@ export default async function DashboardHome() {
             ))}
           </div>
         </Card>
+
+        <Card title="Company leave calendar" subtitle="Who's planned leave, when they leave, and when they're back.">
+          <CompanyLeaveCalendar entries={companyLeave} />
+        </Card>
       </div>
     );
   }
@@ -155,6 +162,10 @@ export default async function DashboardHome() {
             </div>
           ))}
         </div>
+      </Card>
+
+      <Card title="Company leave calendar" subtitle="Who's planned leave, when they leave, and when they're back.">
+        <CompanyLeaveCalendar entries={companyLeave} />
       </Card>
     </div>
   );
