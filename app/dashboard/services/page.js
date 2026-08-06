@@ -34,6 +34,7 @@ export default async function ServicesPage() {
                 {isHr && <th className="px-5 py-2 font-medium">Employee</th>}
                 <th className="px-5 py-2 font-medium">Type</th>
                 <th className="px-5 py-2 font-medium">Amount</th>
+                <th className="px-5 py-2 font-medium">Date</th>
                 <th className="px-5 py-2 font-medium">Details</th>
                 <th className="px-5 py-2 font-medium">Status</th>
                 {isHr && <th className="px-5 py-2 font-medium">Action</th>}
@@ -45,6 +46,7 @@ export default async function ServicesPage() {
                   {isHr && <td className="px-5 py-2.5 font-medium text-slate-800">{r.user.name}</td>}
                   <td className="px-5 py-2.5 text-slate-600 capitalize">{r.type.replace("_", " ")}</td>
                   <td className="px-5 py-2.5 text-slate-600">{money(r.amount)}</td>
+                  <td className="px-5 py-2.5 text-slate-600">{r.effectiveDate || "—"}</td>
                   <td className="px-5 py-2.5 text-slate-600 max-w-[220px] truncate">{r.details}</td>
                   <td className="px-5 py-2.5"><StatusBadge status={r.status} /></td>
                   {isHr && (
@@ -56,7 +58,7 @@ export default async function ServicesPage() {
               ))}
               {requests.length === 0 && (
                 <tr>
-                  <td colSpan={isHr ? 6 : 4} className="px-5 py-6 text-center text-slate-400 text-sm">No requests yet.</td>
+                  <td colSpan={isHr ? 7 : 5} className="px-5 py-6 text-center text-slate-400 text-sm">No requests yet.</td>
                 </tr>
               )}
             </tbody>

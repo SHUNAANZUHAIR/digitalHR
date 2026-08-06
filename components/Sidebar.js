@@ -12,10 +12,10 @@ import {
   HandCoins,
   TrendingUp,
   LogOut,
-  Building2,
   Users,
   Network,
 } from "lucide-react";
+import { ORG_SHORT_NAME, ORG_LOGO_PATH } from "@/lib/branding";
 
 const NAV = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -45,11 +45,12 @@ export default function Sidebar({ user }) {
 
   return (
     <aside className="w-60 shrink-0 border-r border-slate-200 bg-white flex flex-col h-screen sticky top-0">
-      <div className="h-16 flex items-center gap-2 px-5 border-b border-slate-100">
-        <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
-          <Building2 className="w-4.5 h-4.5 text-white" />
+      <div className="min-h-16 flex items-center gap-2.5 px-5 py-3 border-b border-slate-100">
+        <img src={ORG_LOGO_PATH} alt={ORG_SHORT_NAME} className="w-8 h-8 object-contain shrink-0" />
+        <div className="min-w-0">
+          <p className="font-semibold text-slate-900 text-sm truncate">{ORG_SHORT_NAME}</p>
+          <p className="text-[10px] text-slate-400 truncate">HR Portal</p>
         </div>
-        <span className="font-semibold text-slate-900 text-sm">Northstar HR</span>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">

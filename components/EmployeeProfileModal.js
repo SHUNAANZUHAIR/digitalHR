@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, User, Upload, FileText, Trash2, Download, Pencil } from "lucide-react";
+import { X, User, Upload, FileText, Trash2, Download, Pencil, UserX, UserCheck } from "lucide-react";
 
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
@@ -32,6 +32,7 @@ export default function EmployeeProfileModal({ employeeId, isHr, canEditPhoto, o
   const [editingPayroll, setEditingPayroll] = useState(false);
   const [payrollSaving, setPayrollSaving] = useState(false);
   const [payrollForm, setPayrollForm] = useState({ basicSalary: "", defaultAllowances: "", bankAccountNumber: "" });
+  const [retireLoading, setRetireLoading] = useState(false);
 
   async function refresh() {
     const [empRes, docsRes] = await Promise.all([
@@ -119,6 +120,15 @@ export default function EmployeeProfileModal({ employeeId, isHr, canEditPhoto, o
     refresh();
   }
 
+  async function toggleRetire() {
+    const retiring = employee.status !== "retired";
+    if (retiring && !confirm(`Retire ${employee.name}? They will no longer be able to log in. This can be undone from here.`)) return;
+    setRetireLoading(true);
+    const res = await fetch(`/api/employees/${employeeId}/retire`, { method: retiring ? "POST" : "DELETE" });
+    if (res.ok) setEmployee((await res.json()).employee);
+    setRetireLoading(false);
+  }
+
   return (
     <div className="fixed inset-0 bg-slate-900/30 flex items-center justify-center z-50 px-4" onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto">
@@ -148,7 +158,12 @@ export default function EmployeeProfileModal({ employeeId, isHr, canEditPhoto, o
                 )}
               </div>
               <div className="min-w-0">
-                <p className="text-base font-semibold text-slate-900 truncate">{employee.name}</p>
+                <p className="text-base font-semibold text-slate-900 truncate flex items-center gap-2">
+                  {employee.name}
+                  {employee.status === "retired" && (
+                    <span className="text-[10px] font-medium text-rose-600 bg-rose-50 rounded-full px-2 py-0.5">Retired</span>
+                  )}
+                </p>
                 <p className="text-xs text-slate-500 truncate">{employee.email}</p>
               </div>
             </div>
@@ -205,6 +220,32 @@ export default function EmployeeProfileModal({ employeeId, isHr, canEditPhoto, o
                     <div className="col-span-2"><p className="text-xs text-slate-400">Bank account number</p><p className="text-slate-700">{employee.bank_account_number || "—"}</p></div>
                   </div>
                 )}
+              </div>
+            )}
+
+            {isHr && (
+              <div className="border-t border-slate-100 pt-3 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-slate-600">Employment status</p>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    {employee.status === "retired"
+                      ? `Retired${employee.retired_date ? ` on ${employee.retired_date}` : ""}. They cannot log in.`
+                      : "Active. Retiring blocks their login while keeping their records."}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={toggleRetire}
+                  disabled={retireLoading}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium disabled:opacity-50 whitespace-nowrap ${
+                    employee.status === "retired"
+                      ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                      : "bg-rose-50 text-rose-700 hover:bg-rose-100"
+                  }`}
+                >
+                  {employee.status === "retired" ? <UserCheck className="w-3.5 h-3.5" /> : <UserX className="w-3.5 h-3.5" />}
+                  {retireLoading ? "Saving…" : employee.status === "retired" ? "Reactivate" : "Retire"}
+                </button>
               </div>
             )}
 

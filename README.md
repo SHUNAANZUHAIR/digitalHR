@@ -1,4 +1,4 @@
-# Northstar HR
+# Secretariat of the North Huvadhoo Nilandhoo Council — HR Portal
 
 A minimal, light-themed HR portal built with Next.js. Employees can track attendance, view salary slips, read HR announcements, request leave, request admin services (like cash advances), and follow their appraisal cycle. HR staff get the same views with management controls (approve/reject requests, post announcements, manage payroll, run appraisal cycles).
 

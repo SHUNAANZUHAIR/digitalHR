@@ -11,7 +11,7 @@ export default async function AppraisalPage() {
   const user = await getSessionUser();
   const isHr = user.role === "hr";
   const appraisals = isHr ? await listAllAppraisals() : await listAppraisalsForUser(user.id);
-  const employees = isHr ? (await listEmployees()).filter((e) => e.role === "employee") : [];
+  const employees = isHr ? (await listEmployees()).filter((e) => e.role === "employee" && e.status !== "retired") : [];
 
   return (
     <div className="space-y-6">

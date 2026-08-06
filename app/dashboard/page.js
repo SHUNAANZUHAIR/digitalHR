@@ -38,7 +38,7 @@ export default async function DashboardHome() {
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   if (user.role === "hr") {
-    const employees = (await listEmployees()).filter((e) => e.role === "employee");
+    const employees = (await listEmployees()).filter((e) => e.role === "employee" && e.status !== "retired");
     const today = new Date().toISOString().slice(0, 10);
     const attToday = (await listAllAttendance()).filter((a) => a.date === today);
     const allLeave = await listAllLeave();
@@ -136,6 +136,12 @@ export default async function DashboardHome() {
               <p className="text-xs text-slate-500">Check-out</p>
               <p className="font-medium text-slate-900">{today?.checkOut || "—"}</p>
             </div>
+            <div>
+              <p className="text-xs text-slate-500">Break</p>
+              <p className="font-medium text-slate-900">
+                {today?.breakIn ? `${today.breakIn} – ${today.breakOut || "…"}` : "—"}
+              </p>
+            </div>
             {today && (
               <div>
                 <p className="text-xs text-slate-500 mb-1">Status</p>
@@ -143,7 +149,12 @@ export default async function DashboardHome() {
               </div>
             )}
           </div>
-          <ClockButton checkedIn={!!today?.checkIn} checkedOut={!!today?.checkOut} />
+          <ClockButton
+            checkedIn={!!today?.checkIn}
+            checkedOut={!!today?.checkOut}
+            breakStarted={!!today?.breakIn}
+            breakEnded={!!today?.breakOut}
+          />
         </div>
       </Card>
 

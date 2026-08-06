@@ -8,7 +8,7 @@ export default function ServiceRequestForm() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ type: "cash_advance", amount: "", details: "" });
+  const [form, setForm] = useState({ type: "cash_advance", amount: "", details: "", effectiveDate: "" });
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -20,7 +20,7 @@ export default function ServiceRequestForm() {
     });
     setLoading(false);
     setOpen(false);
-    setForm({ type: "cash_advance", amount: "", details: "" });
+    setForm({ type: "cash_advance", amount: "", details: "", effectiveDate: "" });
     router.refresh();
   }
 
@@ -45,6 +45,7 @@ export default function ServiceRequestForm() {
             <option value="cash_advance">Cash advance</option>
             <option value="equipment">Equipment</option>
             <option value="letter">Employment letter</option>
+            <option value="resignation">Resignation</option>
             <option value="other">Other</option>
           </select>
         </div>
@@ -52,6 +53,12 @@ export default function ServiceRequestForm() {
           <div>
             <label className="block text-xs font-medium text-slate-600 mb-1">Amount (PKR)</label>
             <input type="number" value={form.amount} onChange={(e) => setForm((f) => ({ ...f, amount: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
+          </div>
+        )}
+        {form.type === "resignation" && (
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">Last working day</label>
+            <input type="date" required value={form.effectiveDate} onChange={(e) => setForm((f) => ({ ...f, effectiveDate: e.target.value }))} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />
           </div>
         )}
         <div>

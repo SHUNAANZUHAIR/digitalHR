@@ -5,7 +5,7 @@ import { getUserByEmail, onboardEmployee, listEmployees } from "@/lib/db";
 export async function GET() {
   const user = await getSessionUser();
   if (!user || user.role !== "hr") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  const employees = await listEmployees();
+  const employees = (await listEmployees()).filter((e) => e.status !== "retired");
   return NextResponse.json({ employees });
 }
 

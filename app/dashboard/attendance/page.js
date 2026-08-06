@@ -54,6 +54,12 @@ export default async function AttendancePage() {
                 <p className="font-medium text-slate-900">{today?.checkOut || "—"}</p>
               </div>
               <div>
+                <p className="text-xs text-slate-500">Break</p>
+                <p className="font-medium text-slate-900">
+                  {today?.breakIn ? `${today.breakIn} – ${today.breakOut || "…"}` : "—"}
+                </p>
+              </div>
+              <div>
                 <p className="text-xs text-slate-500">Expected check-in</p>
                 <p className="font-medium text-slate-900">{settings.checkInDeadline}</p>
               </div>
@@ -65,7 +71,12 @@ export default async function AttendancePage() {
                 </p>
               </div>
             </div>
-            <ClockButton checkedIn={!!today?.checkIn} checkedOut={!!today?.checkOut} />
+            <ClockButton
+              checkedIn={!!today?.checkIn}
+              checkedOut={!!today?.checkOut}
+              breakStarted={!!today?.breakIn}
+              breakEnded={!!today?.breakOut}
+            />
           </div>
         </Card>
       )}
@@ -79,6 +90,7 @@ export default async function AttendancePage() {
                 <th className="px-5 py-2 font-medium">Date</th>
                 <th className="px-5 py-2 font-medium">Check-in</th>
                 <th className="px-5 py-2 font-medium">Check-out</th>
+                <th className="px-5 py-2 font-medium">Break</th>
                 <th className="px-5 py-2 font-medium">Status</th>
                 {!isHr && <th className="px-5 py-2 font-medium">Time change</th>}
               </tr>
@@ -92,6 +104,7 @@ export default async function AttendancePage() {
                     <td className="px-5 py-2.5 text-slate-600">{r.date}</td>
                     <td className="px-5 py-2.5 text-slate-600">{r.checkIn || "—"}</td>
                     <td className="px-5 py-2.5 text-slate-600">{r.checkOut || "—"}</td>
+                    <td className="px-5 py-2.5 text-slate-600">{r.breakIn ? `${r.breakIn} – ${r.breakOut || "…"}` : "—"}</td>
                     <td className="px-5 py-2.5"><StatusBadge status={r.status} /></td>
                     {!isHr && (
                       <td className="px-5 py-2.5">
@@ -109,7 +122,7 @@ export default async function AttendancePage() {
               })}
               {records.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-6 text-center text-slate-400 text-sm">No records yet.</td>
+                  <td colSpan={6} className="px-5 py-6 text-center text-slate-400 text-sm">No records yet.</td>
                 </tr>
               )}
             </tbody>

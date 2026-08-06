@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Building2 } from "lucide-react";
+import { ORG_NAME, ORG_ADDRESS, ORG_LOGO_PATH } from "@/lib/branding";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -44,11 +44,12 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
       <div className="w-full max-w-sm">
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center">
-            <Building2 className="w-5 h-5 text-white" />
+        <div className="flex flex-col items-center text-center gap-2 mb-8">
+          <img src={ORG_LOGO_PATH} alt={ORG_NAME} className="w-14 h-14 object-contain" />
+          <div>
+            <p className="text-sm font-semibold text-slate-900 leading-snug">{ORG_NAME}</p>
+            <p className="text-xs text-slate-500 mt-0.5">{ORG_ADDRESS}</p>
           </div>
-          <span className="text-lg font-semibold text-slate-900">Northstar HR</span>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
